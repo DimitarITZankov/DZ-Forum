@@ -15,7 +15,8 @@ urlpatterns = [
     path('register/', views.RegisterApiView.as_view(), name='register'),
 
     # Dashboard endpoints
-    path('dashboard/', views.DashboardAllPostsView.as_view(), name='dashboard'),			# liked posts, 
+    path('dashboard/', views.DashboardView.as_view(), name='user-profile'),
+    path('dashboard/my_posts/', views.DashboardAllPostsView.as_view(), name='all-posts'),			# liked posts, 
 
     # Posts endpoints
     path('', include(router.urls)),

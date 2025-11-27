@@ -55,7 +55,7 @@ class DashboardAllPostsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'name', 'posts']
+        fields = ['posts']
 
     def get_posts(self, obj):
         return PostsSerializer(obj.posts_set.all(), many=True).data

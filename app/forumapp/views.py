@@ -43,11 +43,16 @@ class RegisterApiView(generics.CreateAPIView):
 
 
 # Profile API
+class DashboardView(generics.RetrieveUpdateAPIView):
+    serializer_class = serializers.DashboardSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-class DashboardAllPostsView(generics.RetrieveUpdateAPIView):
+    def get_object(self):
+        return self.request.user
+
+class DashboardAllPostsView(generics.RetrieveAPIView):
     serializer_class = serializers.DashboardAllPostsSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        # Return the currently logged-in user
         return self.request.user
