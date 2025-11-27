@@ -1,4 +1,4 @@
 django
 djangorestframework
-djangorestframework-simplejwt
+djangorestframework-simplejwt>=5.2.0
 psycopg2

@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y gcc libpq-dev && rm -rf /var/lib/apt/li
 
 # Copy requirements first for caching
 COPY ./requirements.txt /tmp/requirements.txt
-EXPOSE 8000
 
 # Create virtualenv and install Python packages
 RUN python -m venv /py && \

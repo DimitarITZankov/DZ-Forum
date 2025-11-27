@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser,PermissionsMixin,BaseUserManager,)
+from django.conf import settings
 
 class UserManager(BaseUserManager):
 	#Manager for users
@@ -29,3 +30,17 @@ class User(AbstractBaseUser,PermissionsMixin):
 	objects = UserManager() #We assign our model to the custom user manager
 
 	USERNAME_FIELD = 'email'
+	REQUIRED_FIELDS = ['name']
+
+	def __str__(self):
+		return self.name
+
+
+class Posts(models.Model):
+	title = models.CharField(max_length=255)
+	author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+	content = models.TextField()
+	posted_on = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.title
