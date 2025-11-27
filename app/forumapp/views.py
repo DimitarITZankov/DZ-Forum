@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from forumapp import serializers, models
 from forumapp.permissions import IsOwnerOrReadOnly
 from django.contrib.auth import get_user_model
+from django.shortcuts import render
 
 User = get_user_model()
 
