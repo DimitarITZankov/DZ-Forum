@@ -22,6 +22,7 @@ class UserManager(BaseUserManager):
 		return user
 
 class User(AbstractBaseUser,PermissionsMixin):
+	# Creating custom user model
 	email = models.EmailField(max_length=255,unique=True)
 	name = models.CharField(max_length=255)
 	is_active = models.BooleanField(default=True)
@@ -29,6 +30,7 @@ class User(AbstractBaseUser,PermissionsMixin):
 
 	objects = UserManager() #We assign our model to the custom user manager
 
+	# Assign the login field and the required fields for creating users
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ['name']
 
@@ -43,13 +45,13 @@ class Posts(models.Model):
         ('LIFE', 'Lifestyle'),
         ('NEWS', 'News'),
         ('GLOBAL', 'Global'),
-    ] 
+    ]
 
 	title = models.CharField(max_length=255)
 	author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	content = models.TextField()
 	posted_on = models.DateTimeField(auto_now_add=True)
-	category = models.CharField(max_length=20, choices=CATEGORY_CHOICES,default='GLOBAL')
+	category = models.CharField(max_length=20, choices=CATEGORY_CHOICES,default='GLOBAL') # Assign every post without category to GLOBAL
 
 	def __str__(self):
 		return self.title
