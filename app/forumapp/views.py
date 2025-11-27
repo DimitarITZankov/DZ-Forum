@@ -40,3 +40,14 @@ class RegisterApiView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+
+
+# Profile API
+
+class DashboardAllPostsView(generics.RetrieveUpdateAPIView):
+    serializer_class = serializers.DashboardAllPostsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # Return the currently logged-in user
+        return self.request.user

@@ -32,3 +32,30 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+
+class DashboardSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = User
+        fields = ['email', 'name', 'password']
+        read_only_fields = ['email']  # Email cannot be changed
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        password = validated_data.get('password', None)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
+class DashboardAllPostsSerializer(serializers.ModelSerializer):
+    posts = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['email', 'name', 'posts']
+
+    def get_posts(self, obj):
+        return PostsSerializer(obj.posts_set.all(), many=True).data
