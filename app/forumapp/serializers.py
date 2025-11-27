@@ -7,7 +7,7 @@ class PostsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Posts
-        fields = ['id', 'title', 'author', 'content', 'posted_on']
+        fields = ['title', 'author', 'content', 'posted_on','category']
         extra_kwargs = {'posted_on': {'read_only': True}}
 
     def get_author(self, obj):
