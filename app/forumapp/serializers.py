@@ -3,17 +3,18 @@ from forumapp import models
 from django.contrib.auth import get_user_model
 
 class PostsSerializer(serializers.ModelSerializer):
-    # Show the author under posts by its name or email instead of the ID
     author = serializers.SerializerMethodField()
+    total_likes = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Posts
-        fields = ['title', 'author', 'content', 'posted_on','category'] # Dont show the ID in the /posts/ endpoint
-        extra_kwargs = {'posted_on': {'read_only': True}}
+        fields = ['id', 'title', 'author', 'content', 'posted_on', 'category', 'total_likes']
 
-    # Get the author name or email instead of the ID
     def get_author(self, obj):
         return obj.author.name or obj.author.email
+
+    def get_total_likes(self, obj):
+        return obj.total_likes()
 
 User = get_user_model()
 

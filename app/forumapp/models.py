@@ -39,19 +39,22 @@ class User(AbstractBaseUser,PermissionsMixin):
 
 
 class Posts(models.Model):
-	# Adding category feature to our Posts model
-	CATEGORY_CHOICES = [
+    CATEGORY_CHOICES = [
         ('TECH', 'Tech'),
         ('LIFE', 'Lifestyle'),
         ('NEWS', 'News'),
         ('GLOBAL', 'Global'),
     ]
 
-	title = models.CharField(max_length=255)
-	author = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-	content = models.TextField()
-	posted_on = models.DateTimeField(auto_now_add=True)
-	category = models.CharField(max_length=20, choices=CATEGORY_CHOICES,default='GLOBAL') # Assign every post without category to GLOBAL
+    title = models.CharField(max_length=255)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    posted_on = models.DateTimeField(auto_now_add=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='GLOBAL')
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)
 
-	def __str__(self):
-		return self.title
+    def __str__(self):
+        return self.title
+
+    def total_likes(self):
+        return self.likes.count()

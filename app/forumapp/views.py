@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions, filters, generics, status
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from forumapp import serializers, models
 from forumapp.permissions import IsOwnerOrReadOnly
 from django.contrib.auth import get_user_model
@@ -13,11 +14,20 @@ class PostsViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = serializers.PostsSerializer
     queryset = models.Posts.objects.order_by('-posted_on')
-    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
-    search_fields = ['category', 'title', 'content']
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def like(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
+        if post.likes.filter(id=user.id).exists():
+            post.likes.remove(user)
+            return Response({'status': 'unliked', 'total_likes': post.total_likes()}, status=status.HTTP_200_OK)
+        else:
+            post.likes.add(user)
+            return Response({'status': 'liked', 'total_likes': post.total_likes()}, status=status.HTTP_200_OK)
 
 
 # Register API
