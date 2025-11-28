@@ -84,4 +84,27 @@ class PostsTestCase(TestCase):
 		self.assertEqual(len(response.json()), 2)  # user liked 2 posts
 
 
+	def test_try_to_register_when_authenticated(self):
+		url = reverse('register')
+		data = {
+        'email': 'new@example.com',
+        'password': 'newpass123',
+        'name': 'New User'
+    	}
+		response = self.client.post(url, data)
+		self.assertEqual(response.status_code, 403)
+		
+
+	def test_register_as_anonymous(self):
+		self.client.force_authenticate(user=None)  # ensure client is anonymous
+
+		url = reverse('register')
+		data = {
+	    	'email': 'anon@example.com',
+			'password': 'anonpass123',
+			'name': 'Anon'
+		}
+		response = self.client.post(url, data)
+		self.assertEqual(response.status_code, 201)
+
 
