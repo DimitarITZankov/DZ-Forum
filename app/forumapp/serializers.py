@@ -16,6 +16,7 @@ class PostsSerializer(serializers.ModelSerializer):
     def get_total_likes(self, obj):
         return obj.total_likes()
 
+# Return my custom user model 
 User = get_user_model()
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -23,7 +24,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'name', 'password']  # adjust 'name' if using custom user
+        fields = ['email', 'name', 'password']
 
     def create(self, validated_data):
         user = User.objects.create_user(

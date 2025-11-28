@@ -42,7 +42,7 @@ class RegisterApiView(generics.CreateAPIView):
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
 
 
-# Profile API
+# Dashboard API
 class DashboardView(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.DashboardSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -56,3 +56,11 @@ class DashboardAllPostsView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+class DashboardLikedByMePosts(generics.ListAPIView):
+    serializer_class = serializers.PostsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return models.Posts.objects.filter(likes=user).order_by('-posted_on')
