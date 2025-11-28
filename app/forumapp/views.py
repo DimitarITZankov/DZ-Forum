@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions, filters, generics, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from forumapp import serializers, models
+from forumapp.permissions import IsNotAuthenticated
 from forumapp.permissions import IsOwnerOrReadOnly
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
@@ -33,7 +34,7 @@ class PostsViewSet(viewsets.ModelViewSet):
 # Register API
 class RegisterApiView(generics.CreateAPIView):
     serializer_class = serializers.RegisterUserSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsNotAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
