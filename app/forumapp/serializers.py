@@ -60,3 +60,14 @@ class DashboardAllPostsSerializer(serializers.ModelSerializer):
 
     def get_posts(self, obj):
         return PostsSerializer(obj.posts_set.all(), many=True).data
+
+
+class PublicUserProfileSerializer(serializers.ModelSerializer):
+    posts = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ('name', 'posts')
+
+    def get_posts(self, obj):
+        user_posts = obj.posts.all().order_by('-posted_on')
+        return PostsSerializer(user_posts, many=True).data

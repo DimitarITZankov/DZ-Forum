@@ -65,3 +65,12 @@ class DashboardLikedByMePosts(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return models.Posts.objects.filter(likes=user).order_by('-posted_on')
+
+
+# User Profile API
+# Go to every user profile and check their posts and info
+class UserProfileView(generics.RetrieveAPIView):
+    serializer_class = serializers.PublicUserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = User.objects.all()
+    lookup_field = "pk"
