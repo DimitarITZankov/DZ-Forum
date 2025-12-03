@@ -58,3 +58,12 @@ class Posts(models.Model):
 
     def total_likes(self):
         return self.likes.count()
+
+class Comments(models.Model):
+	commentor = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+	post = models.ForeignKey(Posts,on_delete=models.CASCADE,related_name='comments')
+	content = models.TextField()
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"{self.commentor.name} on {self.post.title}"

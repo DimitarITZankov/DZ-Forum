@@ -5,6 +5,7 @@ from forumapp import views
 
 router = DefaultRouter()
 router.register('posts', views.PostsViewSet)
+router.register('comment', views.CommentsViewSet)
 
 urlpatterns = [
     # JWT endpoints
@@ -22,6 +23,7 @@ urlpatterns = [
     #Profile ednpoints
     path('profiles/<int:pk>/', views.UserProfileView.as_view(), name='user-profile-public'),
 
-    # Posts endpoints
+    # Posts,Comments endpoints
     path('', include(router.urls)),
+
 ]

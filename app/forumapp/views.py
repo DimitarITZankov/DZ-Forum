@@ -4,8 +4,10 @@ from rest_framework.decorators import action
 from forumapp import serializers, models
 from forumapp.permissions import IsNotAuthenticated
 from forumapp.permissions import IsOwnerOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 User = get_user_model()
 
@@ -13,7 +15,7 @@ User = get_user_model()
 # Posts API
 class PostsViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-    serializer_class = serializers.PostsSerializer
+    serializer_class = serializers.PostsDetailSerializer
     queryset = models.Posts.objects.order_by('-posted_on')
 
     def perform_create(self, serializer):
@@ -29,6 +31,11 @@ class PostsViewSet(viewsets.ModelViewSet):
         else:
             post.likes.add(user)
             return Response({'status': 'liked', 'total_likes': post.total_likes()}, status=status.HTTP_200_OK)
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.PostsSerializer
+        return self.serializer_class
 
 
 # Register API
@@ -74,3 +81,13 @@ class UserProfileView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     lookup_field = "pk"
+
+# Comments to posts API
+class CommentsViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.CommentsSerializer
+    queryset = models.Comments.objects.all()
+    permission_classes = [permissions.IsAuthenticated,]
+    authentication_classes = [JWTAuthentication,]
+
+    def perform_create(self,serializer):
+        serializer.save(commentor=self.request.user)

@@ -16,6 +16,10 @@ class PostsSerializer(serializers.ModelSerializer):
     def get_total_likes(self, obj):
         return obj.total_likes()
 
+class PostsDetailSerializer(PostsSerializer):
+    class Meta(PostsSerializer.Meta):
+        fields = PostsSerializer.Meta.fields + ['comments']
+
 # Return my custom user model 
 User = get_user_model()
 
@@ -37,7 +41,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 class DashboardSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
-
     class Meta:
         model = User
         fields = ['email', 'name', 'password']
@@ -53,7 +56,6 @@ class DashboardSerializer(serializers.ModelSerializer):
 
 class DashboardAllPostsSerializer(serializers.ModelSerializer):
     posts = serializers.SerializerMethodField()
-
     class Meta:
         model = User
         fields = ['posts']
@@ -71,3 +73,15 @@ class PublicUserProfileSerializer(serializers.ModelSerializer):
     def get_posts(self, obj):
         user_posts = obj.posts.all().order_by('-posted_on')
         return PostsSerializer(user_posts, many=True).data
+
+class CommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Comments
+        fields = ['id','commentor','post','content','created_at']
+        read_only_fields = ['commentor','created_at']
+
+    def create(self,validated_data):
+        user = self.context['request'].user
+        comment = models.Comments.objects.create(commentor=user,post=validated_data['post'],content=validated_data['content'])
+        return comment
+
